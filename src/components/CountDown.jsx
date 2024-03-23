@@ -5,12 +5,13 @@ import background from '../assets/background.jpg';
 
 export default function CountDown() {
 
+  const initTime = 3600;
   const [hour, setHour] = useState(0)
   const [minute, setMinute] = useState(0)
   const [second, setSecond] = useState(0)
   const [isCounting, setIsCounting] = useState(false)
 
-  const [time, setTime] = useState(3600 * 5) //default time is 3600 
+  const [time, setTime] = useState(initTime) //default time is 3600 
   useEffect(() => {
     console.log("useEffect--" + isCounting + "---time=" + time);
 
@@ -38,6 +39,29 @@ export default function CountDown() {
 
   }, [isCounting, time])
 
+  const foramtText = (e, type) => {
+    console.log(e.target.value);
+    let value = e.target.value.replace("/e|E/g", "")
+
+    console.log(value);
+    switch(type) {
+      case 0 :
+        setHour(value)
+      break
+
+      case 1:
+        setMinute(value)
+      break
+
+      case 2:
+        setSecond(value)
+      break
+    }
+  }
+
+  const keyPress = (e) => {
+
+  }
   const addPreZero = (number) => {
     if (number >= 10) {
       return `${number}`
@@ -55,9 +79,9 @@ export default function CountDown() {
       }
     } else {
       if (time <= 0) {
-        setTime(20);
+        setTime(initTime);
       }
-      if (time === 20) {
+      if (time === initTime) {
         setTime(time - 1);
       }
 
@@ -72,7 +96,7 @@ export default function CountDown() {
     setHour(0);
     setMinute(0);
     setSecond(0);
-    setTime(20)
+    setTime(initTime)
     setIsCounting(false)
   }
 
@@ -83,17 +107,34 @@ export default function CountDown() {
         {/* <div id='year'></div>
         <div id='month'></div>
         <div id='day'></div> */}
+
+        <div id='hour' className='time' >
+          <input className='time-input' type='number'  onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}  />
+          <span className='time-line'></span>
+          <label className='time-label'>Hour</label>
+          {/* {addPreZero(hour)}  */}
         
-        <div id='hour' className='time' type='number'>{addPreZero(hour)}</div>
+        </div>
         <div className='semicolon'>
           <div >:</div>
         </div>
 
-        <div id='minute' className='time'>{addPreZero(minute)}</div>
+        <div id='minute' className='time'>
+          <input className='time-input' type='number'  onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}/>
+          <span className='time-line'></span>
+          <label className='time-label'>Minute</label>
+
+          {/* {addPreZero(minute)} */}
+        </div>
         <div className='semicolon'>
           <c>:</c>
         </div>
-        <div id='second' className='time'>{addPreZero(second)}</div>
+        <div id='second' className='time'>
+        <input className='time-input' type='number' onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}/>
+        <span className='time-line'></span>
+          <label className='time-label'>Second</label>
+          {/* {addPreZero(second)} */}
+          </div>
       </div>
 
       <div id='btn-container'>
