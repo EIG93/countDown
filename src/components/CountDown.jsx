@@ -5,15 +5,18 @@ import background from '../assets/background.jpg';
 
 export default function CountDown() {
 
-  const initTime = 3600;
+  
   const [hour, setHour] = useState(0)
   const [minute, setMinute] = useState(0)
-  const [second, setSecond] = useState(0)
+  const [second, setSecond] = useState(30)
   const [isCounting, setIsCounting] = useState(false)
 
-  const [time, setTime] = useState(initTime) //default time is 3600 
+
+  const initialTime = hour * 3600 + minute * 60 + second;
+  const [time, setTime] = useState(initialTime) //default time is 3600 
+
   useEffect(() => {
-    console.log("useEffect--" + isCounting + "---time=" + time);
+    console.log("useEffect--" + isCounting + "---time=" + initialTime);
 
     if (isCounting) {
       if (time >= 0) {
@@ -32,11 +35,18 @@ export default function CountDown() {
 
         return () => clearInterval(interval);
       } else {
-        setTime(20)
+       
+        setHour(0);
+        setMinute(0);
+        setSecond(30);
         setIsCounting(false)
       }
+    }else {
+      setTime(initialTime)
     }
-
+    
+    // else {
+    
   }, [isCounting, time])
 
   const foramtText = (e, type) => {
@@ -46,22 +56,24 @@ export default function CountDown() {
     console.log(value);
     switch(type) {
       case 0 :
-        setHour(value)
+        setHour(parseInt(value))
+        setTime(parseInt(value) * 3600 + minute * 60 + second)
       break
 
       case 1:
-        setMinute(value)
+        setMinute(parseInt(value))
+        setTime(hour * 3600 + parseInt(value) * 60 + second)
       break
 
       case 2:
-        setSecond(value)
+        setSecond(parseInt(value))
+        setTime(hour * 3600 + minute * 60 + parseInt(value))
       break
     }
+    
   }
 
-  const keyPress = (e) => {
 
-  }
   const addPreZero = (number) => {
     if (number >= 10) {
       return `${number}`
@@ -72,22 +84,30 @@ export default function CountDown() {
 
 
   function startCountDown() {
-    if (isCounting) {
-      //to stop
-      if (time > 0) {
-        setIsCounting(false);
-      }
-    } else {
-      if (time <= 0) {
-        setTime(initTime);
-      }
-      if (time === initTime) {
-        setTime(time - 1);
-      }
 
-      setIsCounting(true);
+    let time = hour * 3600 + minute * 60 + second
 
-    }
+    console.log('startCountDown--minute--' + time);
+    console.log('startCountDown--' + time);
+
+
+    setIsCounting(!isCounting);
+    // if (isCounting) {
+    //   //to stop
+    //   if (time > 0) {
+    //     setIsCounting(false);
+    //   }
+    // } else {
+    //   // if (time <= 0) {
+    //   //   setTime(time);
+    //   // }
+    //   // if (time === initTime) {
+    //   //   setTime(time - 1);
+    //   // }
+
+    //   setIsCounting(true);
+
+    // }
     console.log("startCountDown--" + isCounting + "--time = " + time);
 
   }
@@ -95,8 +115,8 @@ export default function CountDown() {
   function reset() {
     setHour(0);
     setMinute(0);
-    setSecond(0);
-    setTime(initTime)
+    setSecond(30);
+    setTime(30)
     setIsCounting(false)
   }
 
@@ -109,7 +129,9 @@ export default function CountDown() {
         <div id='day'></div> */}
 
         <div id='hour' className='time' >
-          <input className='time-input' type='number'  onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}  />
+          <input className='time-input' type='number' value={hour} onChange={(e) => 
+            foramtText(e, 0)
+          }  onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}  />
           <span className='time-line'></span>
           <label className='time-label'>Hour</label>
           {/* {addPreZero(hour)}  */}
@@ -120,7 +142,9 @@ export default function CountDown() {
         </div>
 
         <div id='minute' className='time'>
-          <input className='time-input' type='number'  onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}/>
+          <input className='time-input' type='number' value={minute} onChange={(e) => 
+            foramtText(e, 1)
+          } onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}/>
           <span className='time-line'></span>
           <label className='time-label'>Minute</label>
 
@@ -130,7 +154,9 @@ export default function CountDown() {
           <c>:</c>
         </div>
         <div id='second' className='time'>
-        <input className='time-input' type='number' onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}/>
+        <input className='time-input' type='number'  value={second} onChange={(e) => 
+            foramtText(e, 2)
+          } onKeyDown={(evt) => ["e", "E", "+", "-"].includes(evt.key) && evt.preventDefault()}/>
         <span className='time-line'></span>
           <label className='time-label'>Second</label>
           {/* {addPreZero(second)} */}
